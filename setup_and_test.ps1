@@ -13,7 +13,7 @@ param(
     [string]$Step = "all"
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 
 function Invoke-Stage1Check {
     Write-Host "`n=========================================" -ForegroundColor Cyan
@@ -129,3 +129,4 @@ switch ($Step) {
         Invoke-Stage3JenkinsSetup
     }
 }
+
