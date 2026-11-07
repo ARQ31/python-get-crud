@@ -1,7 +1,7 @@
 FROM jenkins/jenkins:lts-jdk17
 USER root
+COPY --from=docker:cli /usr/local/bin/docker /usr/bin/docker
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 docker.io curl && \
+    apt-get install -y --no-install-recommends python3 curl && \
     rm -rf /var/lib/apt/lists/*
 # Run as root in local lab so Jenkins can access /var/run/docker.sock directly on Windows Docker Desktop
-
