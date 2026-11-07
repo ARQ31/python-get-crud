@@ -1,0 +1,12 @@
+.git
+.gitignore
+README.md
+Jenkinsfile
+Dockerfile.jenkins
+PRD_Praktikum_CICD_Jenkins.md
+LAPORAN_DAN_ANALISIS.md
+setup_and_test.ps1
+test_app.py
+__pycache__
+*.pyc
+.env
