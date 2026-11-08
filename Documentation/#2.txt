@@ -1,0 +1,172 @@
+Started by GitHub push by ARQ31
+Obtained Jenkinsfile from git https://github.com/ARQ31/python-get-crud.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/python-crud-api-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential github-pat-readonly
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/python-crud-api-pipeline/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/ARQ31/python-get-crud.git # timeout=10
+Fetching upstream changes from https://github.com/ARQ31/python-get-crud.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/ARQ31/python-get-crud.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision bc65727be0e6d2acd55c2677bbf77da22b0acada (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bc65727be0e6d2acd55c2677bbf77da22b0acada # timeout=10
+Commit message: "ci: trigger automated Jenkins build via GitHub push webhook"
+ > git rev-list --no-walk f9803c88b0e8e0b8f5e5650b6e81d6a2daf6fde0 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (1. Checkout Code)
+[Pipeline] echo
+Checking out source code from GitHub
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential github-pat-readonly
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/python-crud-api-pipeline/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/ARQ31/python-get-crud.git # timeout=10
+Fetching upstream changes from https://github.com/ARQ31/python-get-crud.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/ARQ31/python-get-crud.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision bc65727be0e6d2acd55c2677bbf77da22b0acada (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f bc65727be0e6d2acd55c2677bbf77da22b0acada # timeout=10
+Commit message: "ci: trigger automated Jenkins build via GitHub push webhook"
+[Pipeline] sh
++ git rev-parse HEAD
+bc65727be0e6d2acd55c2677bbf77da22b0acada
++ git rev-parse --short HEAD
+bc65727
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (2. Code Syntax Verification)
+[Pipeline] sh
++ python3 -m py_compile app.py test_app.py
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (3. Automated API Tests)
+[Pipeline] sh
++ python3 -m unittest -v test_app.py
+test_health_endpoint (test_app.BackendAPITestCase.test_health_endpoint) ... [07/Nov/2026 23:57:48] "GET /health HTTP/1.1" 200 -
+ok
+test_post_message_empty_validation (test_app.BackendAPITestCase.test_post_message_empty_validation) ... [07/Nov/2026 23:57:48] "POST /messages HTTP/1.1" 400 -
+ok
+test_post_message_too_long_validation (test_app.BackendAPITestCase.test_post_message_too_long_validation) ... [07/Nov/2026 23:57:48] "POST /messages HTTP/1.1" 400 -
+ok
+test_post_message_valid (test_app.BackendAPITestCase.test_post_message_valid) ... [07/Nov/2026 23:57:48] "POST /messages HTTP/1.1" 201 -
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.526s
+
+OK
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (4. Build Docker Image)
+[Pipeline] sh
++ git rev-parse --short HEAD
++ COMMIT_SHA=bc65727
++ echo Building image for BUILD_NUMBER=2, COMMIT_SHA=bc65727
+Building image for BUILD_NUMBER=2, COMMIT_SHA=bc65727
++ docker build -t python-crud-api:2 .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon   7.68kB
+Step 1/6 : FROM python:3.11-slim
+ ---> 65bd3d9f1d7f
+Step 2/6 : ENV PYTHONUNBUFFERED=1
+ ---> Using cache
+ ---> 8d16f241a269
+Step 3/6 : WORKDIR /app
+ ---> Using cache
+ ---> d9702c915e2f
+Step 4/6 : COPY app.py .
+ ---> Using cache
+ ---> 97b92d21ba06
+Step 5/6 : EXPOSE 5000
+ ---> Using cache
+ ---> e4b7ef177d06
+Step 6/6 : CMD ["python", "app.py"]
+ ---> Using cache
+ ---> ce1945a00b8e
+Successfully built ce1945a00b8e
+Successfully tagged python-crud-api:2
++ docker tag python-crud-api:2 python-crud-api:bc65727
++ docker tag python-crud-api:2 python-crud-api:latest
++ docker images python-crud-api
+IMAGE                     ID             DISK USAGE   CONTENT SIZE   EXTRA
+python-crud-api:1         ce1945a00b8e        187MB         45.6MB   U    
+python-crud-api:2         ce1945a00b8e        187MB         45.6MB   U    
+python-crud-api:bc65727   ce1945a00b8e        187MB         45.6MB   U    
+python-crud-api:f9803c8   ce1945a00b8e        187MB         45.6MB   U    
+python-crud-api:latest    ce1945a00b8e        187MB         45.6MB   U    
+python-crud-api:manual    1b252c6a53af        187MB         45.6MB        
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (5. Automated Deployment)
+[Pipeline] sh
++ docker network inspect jenkins-net
++ docker stop production-api-container
+production-api-container
++ docker rm production-api-container
+production-api-container
++ docker volume create production-api-data
+production-api-data
++ docker run -d --name production-api-container --network jenkins-net -p 5000:5000 -v production-api-data:/var/lib/backend_data python-crud-api:latest
+58a08ecf5c4e29c0959cb78c9b16b8fc5cedfdd958c8ba7c89e084d71a4e2e56
++ docker ps --filter name=production-api-container
+CONTAINER ID   IMAGE                    COMMAND           CREATED                  STATUS                  PORTS                                         NAMES
+58a08ecf5c4e   python-crud-api:latest   "python app.py"   Less than a second ago   Up Less than a second   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   production-api-container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (6. Health Check)
+[Pipeline] sh
++ sleep 3
++ curl -fsS http://production-api-container:5000/health
+{"status": "active", "service": "Backend API"}+ echo 
+
++ docker logs --tail 20 production-api-container
+Backend API listening on 0.0.0.0:5000
+[07/Nov/2026 23:57:56] "GET /health HTTP/1.1" 200 -
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Pipeline completed successfully.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
